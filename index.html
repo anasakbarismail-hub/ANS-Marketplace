@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAM Studios | Premium Digital Media Agency</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg:      '#050505',
+            surface: '#0f0f11',
+            card:    '#16161a',
+            border:  '#2a2a35',
+            accent:  '#eab308',
+            accent2: '#fbbf24',
+            muted:   '#8e8e9e',
+          },
+          fontFamily: {
+            display: ['Syne', 'sans-serif'],
+            body:    ['DM Sans', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: #050505;
+      color: #e8f0fe;
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #050505; }
+    ::-webkit-scrollbar-thumb { background: #2a2a35; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #eab308; }
+
+    /* ── Noise overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: -2; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+      opacity: 0.8;
+    }
+
+    /* ── Studio ambient glow ── */
+    .studio-glow {
+      position: fixed; top: -20%; left: 50%;
+      transform: translateX(-50%);
+      width: 80vw; height: 80vh;
+      background: radial-gradient(circle, rgba(234,179,8,0.07) 0%, transparent 65%);
+      z-index: -1; pointer-events: none;
+    }
+
+    /* ── Background watermark icons ── */
+    .bg-icon {
+      position: fixed;
+      font-size: 25vw;
+      color: rgba(255,255,255,0.012);
+      z-index: -2;
+      pointer-events: none;
+      animation: bgFloat 25s ease-in-out infinite alternate;
+    }
+    .bg-icon.left  { top: 10%; left: -5%; }
+    .bg-icon.right { bottom: 5%; right: -5%; animation-delay: -8s; }
+
+    /* ── Glass nav ── */
+    .glass-nav {
+      background: rgba(5,5,5,0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: all 0.3s ease;
+    }
+    .glass-nav.scrolled {
+      background: rgba(5,5,5,0.95);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.6);
+    }
+
+    /* ── Typography ── */
+    .glow-text {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b, #eab308);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Buttons ── */
+    .btn-primary {
+      background: linear-gradient(135deg, #eab308, #d97706);
+      color: #000;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(234,179,8,0.25);
+      position: relative; overflow: hidden;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .btn-primary:hover::after { opacity: 1; }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(234,179,8,0.45); }
+
+    .btn-ghost {
+      border: 1.5px solid rgba(255,255,255,0.15);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn-ghost:hover {
+      border-color: #eab308;
+      color: #eab308;
+      background: rgba(234,179,8,0.06);
+      transform: translateY(-3px);
+    }
+
+    /* ── Service cards ── */
+    .service-card {
+      background: rgba(22,22,26,0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+      position: relative; overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at top right, rgba(234,179,8,0.1), transparent 50%);
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .service-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(234,179,8,0.3);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 20px rgba(234,179,8,0.1);
+    }
+    .service-card:hover::before { opacity: 1; }
+
+    /* ── Counter numbers ── */
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, #8e8e9e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Portfolio grid ── */
+    .portfolio-item {
+      position: relative; overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: all 0.4s ease;
+      background: #16161a;
+    }
+    .portfolio-item:hover { transform: scale(1.02); border-color: rgba(234,179,8,0.3); }
+    .portfolio-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 1.25rem;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+
+    /* ── Floating social dock ── */
+    .social-dock {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15,15,17,0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 10px 28px; border-radius: 999px;
+      display: flex; gap: 28px; z-index: 90;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    }
+    .social-icon {
+      color: #8e8e9e; font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+    .social-icon:hover {
+      color: #eab308;
+      transform: scale(1.2) translateY(-4px);
+      filter: drop-shadow(0 0 8px rgba(234,179,8,0.6));
+    }
+
+    /* ── Contact form ── */
+    .form-input {
+      background: rgba(22,22,26,0.8);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      color: #e8f0fe;
+      padding: 12px 16px;
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: rgba(234,179,8,0.5);
+      box-shadow: 0 0 0 3px rgba(234,179,8,0.1);
+    }
+    .form-input::placeholder { color: #555; }
+
+    /* ── Chatbot ── */
+    #chatbot-bubble {
+      position: fixed; bottom: 100px; right: 24px;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: linear-gradient(135deg, #eab308, #d97706);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 200;
+      box-shadow: 0 4px 20px rgba(234,179,8,0.4);
+      transition: all 0.3s ease;
+      animation: pulseChat 2s ease-in-out infinite;
+    }
+    #chatbot-bubble:hover { transform: scale(1.1); }
+
+    #chatbot-window {
+      position: fixed; bottom: 165px; right: 24px;
+      width: 340px; height: 480px;
+      background: #0f0f11;
+      border: 1px solid rgba(234,179,8,0.25);
+      border-radius: 16px;
+      display: flex; flex-direction: column;
+      z-index: 200; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      transform: scale(0.8) translateY(20px);
+      opacity: 0; pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    #chatbot-window.open {
+      transform: scale(1) translateY(0);
+      opacity: 1; pointer-events: all;
+    }
+    .chat-header {
+      background: linear-gradient(135deg, #eab308, #d97706);
+      padding: 14px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    #chat-messages {
+      flex: 1; overflow-y: auto; padding: 14px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    #chat-messages::-webkit-scrollbar { width: 4px; }
+    #chat-messages::-webkit-scrollbar-thumb { background: #2a2a35; border-radius: 2px; }
+    .msg-user {
+      background: rgba(234,179,8,0.15);
+      border: 1px solid rgba(234,179,8,0.2);
+      color: #fff; padding: 8px 12px;
+      border-radius: 12px 12px 2px 12px;
+      font-size: 13px; align-self: flex-end;
+      max-width: 80%;
+    }
+    .msg-bot {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #d1d5db; padding: 8px 12px;
+      border-radius: 12px 12px 12px 2px;
+      font-size: 13px; align-self: flex-start;
+      max-width: 85%; line-height: 1.5;
+    }
+    .msg-typing {
+      display: flex; gap: 4px; align-items: center;
+      padding: 10px 12px;
+    }
+    .typing-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #8e8e9e;
+      animation: typingBounce 1s ease-in-out infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+    .chat-input-row {
+      display: flex; gap: 8px; padding: 10px 12px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    #chat-input {
+      flex: 1; background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; color: #fff;
+      padding: 8px 12px; font-size: 13px;
+      outline: none; font-family: 'DM Sans', sans-serif;
+    }
+    #chat-input:focus { border-color: rgba(234,179,8,0.4); }
+    #chat-send {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: linear-gradient(135deg, #eab308, #d97706);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #000; font-size: 14px;
+      transition: all 0.2s ease;
+    }
+    #chat-send:hover { transform: scale(1.05); }
+
+    /* ── Section reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left {
+      opacity: 0; transform: translateX(-32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right {
+      opacity: 0; transform: translateX(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    /* ── Progress bar (page scroll) ── */
+    #progress-bar {
+      position: fixed; top: 0; left: 0; height: 2px;
+      background: linear-gradient(90deg, #eab308, #f59e0b);
+      z-index: 999; width: 0%; transition: width 0.1s linear;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: #eab308;
+    }
+
+    /* ── Ticker ── */
+    .ticker-wrap { overflow: hidden; white-space: nowrap; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .ticker-inner { display: inline-block; animation: ticker 30s linear infinite; }
+
+    /* ── Mobile menu ── */
+    #mobile-menu { display: none; }
+    #mobile-menu.open { display: flex; }
+
+    /* ── Animations ── */
+    @keyframes bgFloat {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-30px) rotate(6deg); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulseChat {
+      0%, 100% { box-shadow: 0 4px 20px rgba(234,179,8,0.4); }
+      50% { box-shadow: 0 4px 35px rgba(234,179,8,0.7); }
+    }
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-6px); }
+    }
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    @keyframes countUp { from { opacity: 0; } to { opacity: 1; } }
+
+    .animate-fadeUp { animation: fadeUp 0.8s ease backwards; }
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+    .delay-400 { animation-delay: 0.4s; }
+
+    /* ── Toast notification ── */
+    #toast {
+      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: #16161a; border: 1px solid rgba(234,179,8,0.3);
+      color: #fff; padding: 12px 24px; border-radius: 999px;
+      font-size: 13px; font-family: 'DM Sans', sans-serif;
+      z-index: 999; opacity: 0; transition: all 0.3s ease;
+      pointer-events: none; white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 768px) {
+      .social-dock { gap: 18px; padding: 10px 18px; }
+      #chatbot-window { width: calc(100vw - 32px); right: 16px; }
+    }
+  </style>
+</head>
+<body class="relative">
+
+  <!-- Page scroll progress bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Ambient light -->
+  <div class="studio-glow"></div>
+
+  <!-- Background watermark icons -->
+  <i class="fa-brands fa-tiktok bg-icon left"></i>
+  <i class="fa-brands fa-instagram bg-icon right"></i>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <!-- ════════════════════════════════════════════
+       NAVIGATION
+  ════════════════════════════════════════════ -->
+  <nav class="fixed top-0 w-full z-50 glass-nav py-4" id="navbar">
+    <div class="max-w-7xl mx-auto px-5 flex flex-col items-center justify-center relative">
+
+      <!-- Brand -->
+      <a href="#" class="font-display font-800 text-3xl md:text-4xl tracking-widest uppercase text-white mb-3" style="letter-spacing:0.15em;">
+        SAM <span class="glow-text">Studios</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex gap-8 text-sm font-medium tracking-wide uppercase items-center">
+        <a href="#explore"    class="text-muted hover:text-accent transition-colors duration-200">Explore</a>
+        <a href="#designing"  class="text-muted hover:text-accent transition-colors duration-200">Designing</a>
+        <a href="#edit"       class="text-muted hover:text-accent transition-colors duration-200">Editing</a>
+        <a href="#portfolio"  class="text-muted hover:text-accent transition-colors duration-200">Portfolio</a>
+        <a href="#business"   class="text-muted hover:text-accent transition-colors duration-200">Business</a>
+        <a href="#contact"    class="text-black bg-accent hover:bg-accent2 px-5 py-1.5 rounded-full transition-all font-bold">Contact Us</a>
+      </div>
+
+      <!-- Mobile hamburger -->
+      <button id="menu-toggle" class="md:hidden absolute right-5 top-1/2 -translate-y-1/2 text-white text-xl p-2">
+        <i class="fa-solid fa-bars-staggered" id="menu-icon"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="flex-col items-center gap-5 py-6 bg-surface/98 border-t border-border mt-4 md:hidden text-sm uppercase tracking-wide">
+      <a href="#explore"   class="mobile-link text-muted hover:text-white transition-colors">Explore</a>
+      <a href="#designing" class="mobile-link text-muted hover:text-white transition-colors">Designing</a>
+      <a href="#edit"      class="mobile-link text-muted hover:text-white transition-colors">Editing</a>
+      <a href="#portfolio" class="mobile-link text-muted hover:text-white transition-colors">Portfolio</a>
+      <a href="#business"  class="mobile-link text-muted hover:text-white transition-colors">Business</a>
+      <a href="#contact"   class="mobile-link text-accent font-bold">Contact Us</a>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════════════════
+       FLOATING SOCIAL DOCK
+  ════════════════════════════════════════════ -->
+  <div class="social-dock">
+    <a href="https://facebook.com/samnews.pk1" target="_blank" class="social-icon" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+    <a href="https://instagram.com/samtv.official" target="_blank" class="social-icon" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+    <a href="https://twitter.com/SharafatAliM00n" target="_blank" class="social-icon" title="Twitter/X"><i class="fa-brands fa-x-twitter"></i></a>
+    <a href="https://www.tiktok.com/@sharafatalimoon" target="_blank" class="social-icon" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+    <a href="https://wa.me/923113333287" target="_blank" class="social-icon" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       HERO SECTION
+  ════════════════════════════════════════════ -->
+  <section id="explore" class="min-h-screen flex items-center justify-center pt-28 pb-20 px-5 relative">
+    <div class="text-center max-w-4xl mx-auto z-10">
+
+      <img src="/static/logo-sam-.png" alt="SAM Studios" class="w-56 md:w-80 mx-auto mb-8 animate-fadeUp drop-shadow-2xl object-contain" />
+
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent/30 bg-accent/10 text-accent text-xs font-bold uppercase tracking-widest mb-6 animate-fadeUp delay-100">
+        <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
+        Premium Digital Media Agency
+      </div>
+
+      <h1 class="font-display font-800 text-4xl md:text-6xl lg:text-7xl text-white leading-[1.1] tracking-tight mb-6 animate-fadeUp delay-200">
+        We Turn Ideas Into<br/><span class="glow-text">Cinematic Reality.</span>
+      </h1>
+
+      <p class="text-muted text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed animate-fadeUp delay-300">
+        Your trusted studio for premium video editing, event shooting, podcast production, and digital marketing. Professional quality, every frame.
+      </p>
+
+      <div class="flex flex-wrap items-center justify-center gap-4 animate-fadeUp delay-400">
+        <a href="#designing" class="btn-primary px-8 py-3.5 rounded-full text-sm">Explore Services</a>
+        <a href="#contact"   class="btn-ghost px-8 py-3.5 rounded-full text-sm">Book a Shoot</a>
+      </div>
+
+      </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       TICKER BAR
+  ════════════════════════════════════════════ -->
+  <div class="ticker-wrap py-3 bg-surface/50">
+    <div class="ticker-inner text-xs text-muted font-medium inline-flex" id="ticker-inner">
+      <!-- JS will duplicate for seamless loop -->
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       DESIGNING SECTION
+  ════════════════════════════════════════════ -->
+  <section id="designing" class="py-24 px-5">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <div class="section-label mb-3">What We Do</div>
+        <h2 class="font-display font-800 text-4xl md:text-5xl text-white mb-4">Graphic <span class="glow-text">Designing</span></h2>
+        <p class="text-muted max-w-xl mx-auto">Creative designs and engaging posts crafted to boost your digital presence and click-through rates.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div class="service-card p-8 group reveal">
+          <div class="w-14 h-14 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-accent/20 transition-all duration-300">
+            <i class="fa-solid fa-bullhorn text-accent text-xl"></i>
+          </div>
+          <h3 class="font-display font-700 text-xl text-white mb-3">Advertisement & Posts</h3>
+          <p class="text-muted text-sm leading-relaxed mb-4">Creative ad shoots and engaging social media posts crafted to boost sales and elevate digital presence.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-[10px] px-2.5 py-1 rounded-full bg-accent/10 text-accent border border-accent/20 font-semibold uppercase tracking-wide">Social Media</span>
+            <span class="text-[10px] px-2.5 py-1 rounded-full bg-accent/10 text-accent border border-accent/20 font-semibold uppercase tracking-wide">Ads</span>
+          </div>
+        </div>
+
+        <div class="service-card p-8 group reveal" style="transition-delay:0.1s">
+          <div class="w-14 h-14 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-accent/20 transition-all duration-300">
+            <i class="fa-solid fa-wand-magic-sparkles text-accent text-xl"></i>
+          </div>
+          <h3 class="font-display font-700 text-xl text-white mb-3">Thumbnail Designing</h3>
+          <p class="text-muted text-sm leading-relaxed mb-4">Highly clickable, visually appealing thumbnail designs to maximize your click-through rates on YouTube and social platforms.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="text-[10px] px-2.5 py-1 rounded-full bg-accent/10 text-accent border border-accent/20 font-semibold uppercase tracking-wide">YouTube</span>
+            <span class="text-[10px] px-2.5 py-1 rounded-full bg-accent/10 text-accent border border-accent/20 font-semibold uppercase tracking-wide">CTR Boost</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       VIDEO & EDITING SECTION
+  ════════════════════════════════════════════ -->
+  <section id="edit" class="py-24 px-5 bg-surface/30 border-t border-border/50">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <div class="section-label mb-3">Production</div>
+        <h2 class="font-display font-800 text-4xl md:text-5xl text-white mb-4">Video & <span class="glow-text">Editing</span></h2>
+        <p class="text-muted max-w-xl mx-auto">High-end content creation, cinematic recording, and professional editing tailored to your unique goals.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+        <div class="service-card p-7 group reveal" style="transition-delay:0s">
+          <div class="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-accent/20 transition-all">
+            <i class="fa-solid fa-film text-accent text-lg"></i>
+          </div>
+          <h3 class="font-display font-700 text-lg text-white mb-2">Video Editing</h3>
+          <p class="text-muted text-xs leading-relaxed">High-retention, cinematic video editing for YouTube, reels, and commercial projects.</p>
+        </div>
+
+        <div class="service-card p-7 group reveal" style="transition-delay:0.1s">
+          <div class="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-accent/20 transition-all">
+            <i class="fa-solid fa-microphone-lines text-accent text-lg"></i>
+          </div>
+          <h3 class="font-display font-700 text-lg text-white mb-2">Podcasts</h3>
+          <p class="text-muted text-xs leading-relaxed">Professional multi-cam setup and studio environment for public and private podcast recordings.</p>
+        </div>
+
+        <div class="service-card p-7 group reveal" style="transition-delay:0.2s">
+          <div class="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-accent/20 transition-all">
+            <i class="fa-solid fa-camera-retro text-accent text-lg"></i>
+          </div>
+          <h3 class="font-display font-700 text-lg text-white mb-2">Event Shooting</h3>
+          <p class="text-muted text-xs leading-relaxed">Every crucial moment captured with professional cinema-grade equipment and expertise.</p>
+        </div>
+
+        <div class="service-card p-7 group reveal" style="transition-delay:0.3s">
+          <div class="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-accent/20 transition-all">
+            <i class="fa-solid fa-users-viewfinder text-accent text-lg"></i>
+          </div>
+          <h3 class="font-display font-700 text-lg text-white mb-2">Interviews</h3>
+          <p class="text-muted text-xs leading-relaxed">Aesthetic lighting and crisp audio setups for corporate interviews and documentaries.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       PORTFOLIO SECTION
+  ════════════════════════════════════════════ -->
+  <section id="portfolio" class="py-24 px-5">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <div class="section-label mb-3">Our Work</div>
+        <h2 class="font-display font-800 text-4xl md:text-5xl text-white mb-4">Recent <span class="glow-text">Projects</span></h2>
+        <p class="text-muted max-w-xl mx-auto">A glimpse into the work we have produced for our clients across various industries.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+        <div class="portfolio-item aspect-video reveal" style="transition-delay:0s">
+          <div class="w-full h-full bg-gradient-to-br from-card to-surface flex items-center justify-center">
+            <div class="text-center">
+              <i class="fa-solid fa-film text-5xl text-accent/30 mb-3"></i>
+              <p class="text-muted text-xs">Commercial Video</p>
+            </div>
+          </div>
+          <div class="portfolio-overlay">
+            <span class="text-[10px] uppercase tracking-widest text-accent font-bold mb-1">Video Editing</span>
+            <h4 class="text-white font-display font-700 text-sm">Commercial Brand Film</h4>
+          </div>
+        </div>
+
+        <div class="portfolio-item aspect-video reveal" style="transition-delay:0.1s">
+          <div class="w-full h-full bg-gradient-to-br from-yellow-900/20 to-card flex items-center justify-center">
+            <div class="text-center">
+              <i class="fa-solid fa-microphone-lines text-5xl text-accent/30 mb-3"></i>
+              <p class="text-muted text-xs">Podcast Studio</p>
+            </div>
+          </div>
+          <div class="portfolio-overlay">
+            <span class="text-[10px] uppercase tracking-widest text-accent font-bold mb-1">Podcast</span>
+            <h4 class="text-white font-display font-700 text-sm">Multi-Cam Podcast Session</h4>
+          </div>
+        </div>
+
+        <div class="portfolio-item aspect-video reveal" style="transition-delay:0.2s">
+          <div class="w-full h-full bg-gradient-to-br from-card to-surface/50 flex items-center justify-center">
+            <div class="text-center">
+              <i class="fa-solid fa-camera-retro text-5xl text-accent/30 mb-3"></i>
+              <p class="text-muted text-xs">Event Coverage</p>
+            </div>
+          </div>
+          <div class="portfolio-overlay">
+            <span class="text-[10px] uppercase tracking-widest text-accent font-bold mb-1">Event</span>
+            <h4 class="text-white font-display font-700 text-sm">Corporate Event Shoot</h4>
+          </div>
+        </div>
+
+        <div class="portfolio-item aspect-video reveal" style="transition-delay:0.3s">
+          <div class="w-full h-full bg-gradient-to-br from-amber-900/20 to-card flex items-center justify-center">
+            <div class="text-center">
+              <i class="fa-solid fa-wand-magic-sparkles text-5xl text-accent/30 mb-3"></i>
+              <p class="text-muted text-xs">Thumbnail Design</p>
+            </div>
+          </div>
+          <div class="portfolio-overlay">
+            <span class="text-[10px] uppercase tracking-widest text-accent font-bold mb-1">Design</span>
+            <h4 class="text-white font-display font-700 text-sm">YouTube Thumbnail Pack</h4>
+          </div>
+        </div>
+
+        <div class="portfolio-item aspect-video reveal" style="transition-delay:0.4s">
+          <div class="w-full h-full bg-gradient-to-br from-card to-amber-900/10 flex items-center justify-center">
+            <div class="text-center">
+              <i class="fa-solid fa-bullhorn text-5xl text-accent/30 mb-3"></i>
+              <p class="text-muted text-xs">Advertisement</p>
+            </div>
+          </div>
+          <div class="portfolio-overlay">
+            <span class="text-[10px] uppercase tracking-widest text-accent font-bold mb-1">Ads</span>
+            <h4 class="text-white font-display font-700 text-sm">Social Media Ad Campaign</h4>
+          </div>
+        </div>
+
+        <div class="portfolio-item aspect-video reveal" style="transition-delay:0.5s">
+          <div class="w-full h-full bg-gradient-to-br from-surface to-card flex items-center justify-center">
+            <div class="text-center">
+              <i class="fa-solid fa-users-viewfinder text-5xl text-accent/30 mb-3"></i>
+              <p class="text-muted text-xs">Interview</p>
+            </div>
+          </div>
+          <div class="portfolio-overlay">
+            <span class="text-[10px] uppercase tracking-widest text-accent font-bold mb-1">Interview</span>
+            <h4 class="text-white font-display font-700 text-sm">Corporate Interview Series</h4>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       WHO WE SERVE
+  ════════════════════════════════════════════ -->
+  <section id="business" class="py-24 bg-surface/40 border-y border-border px-5">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col lg:flex-row gap-16 items-center">
+
+        <div class="flex-1 reveal-left">
+          <div class="section-label mb-3">Who We Serve</div>
+          <h2 class="font-display font-800 text-4xl md:text-5xl text-white mb-6">Designed for <br/><span class="glow-text">Your Success.</span></h2>
+          <p class="text-muted text-lg mb-10 leading-relaxed">Whether you are starting out or scaling up, our studio handles your specific needs with uncompromised quality.</p>
+
+          <div class="space-y-7">
+            <div class="flex items-start gap-5">
+              <div class="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i class="fa-solid fa-graduation-cap text-accent"></i>
+              </div>
+              <div>
+                <h4 class="text-white font-bold text-lg mb-1">Students</h4>
+                <p class="text-muted text-sm leading-relaxed">Affordable portfolios, short films, and academic project recordings with professional quality.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-5">
+              <div class="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i class="fa-solid fa-user-tie text-accent"></i>
+              </div>
+              <div>
+                <h4 class="text-white font-bold text-lg mb-1">Professionals</h4>
+                <p class="text-muted text-sm leading-relaxed">Corporate branding, high-end interviews, and premium personal branding content.</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-5">
+              <div class="w-10 h-10 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <i class="fa-solid fa-store text-accent"></i>
+              </div>
+              <div>
+                <h4 class="text-white font-bold text-lg mb-1">Local Businesses</h4>
+                <p class="text-muted text-sm leading-relaxed">Product shoots, local business advertisements, and social media content setups.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual side -->
+        <div class="flex-1 w-full reveal-right">
+          <div class="relative">
+            <div class="aspect-square max-w-sm mx-auto rounded-2xl border border-border bg-card overflow-hidden shadow-2xl flex items-center justify-center">
+              <div class="absolute inset-0 opacity-10" style=""></div>
+              <div class="relative z-10 text-center">
+                <div class="w-28 h-28 rounded-full bg-accent/15 border border-accent/20 flex items-center justify-center mx-auto mb-4 animate-pulse">
+                  <i class="fa-solid fa-play text-5xl text-accent ml-2"></i>
+                </div>
+                <p class="text-muted text-sm font-medium">Professional Studio</p>
+                <p class="text-accent text-xs mt-1 font-bold uppercase tracking-widest">Now Booking</p>
+              </div>
+            </div>
+            <!-- Floating stat cards -->
+            <div class="absolute -top-4 -right-4 bg-card border border-border rounded-xl px-4 py-3 shadow-xl hidden lg:block">
+              <div class="text-xs text-muted mb-0.5">Projects Done</div>
+              <div class="font-display font-800 text-white text-xl">200+ <span class="text-accent text-sm">✓</span></div>
+            </div>
+            <div class="absolute -bottom-4 -left-4 bg-card border border-border rounded-xl px-4 py-3 shadow-xl hidden lg:block">
+              <div class="text-xs text-muted mb-0.5">Client Satisfaction</div>
+              <div class="font-display font-800 text-accent text-xl">100%</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       CONTACT SECTION
+  ════════════════════════════════════════════ -->
+  <section id="contact" class="py-24 px-5 relative overflow-hidden pb-36">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-accent/5 blur-[100px] pointer-events-none rounded-full"></div>
+
+    <div class="max-w-5xl mx-auto relative z-10">
+      <div class="text-center mb-16 reveal">
+        <div class="section-label mb-3">Get In Touch</div>
+        <h2 class="font-display font-800 text-4xl md:text-6xl text-white mb-4">Let's Create <span class="glow-text">Together.</span></h2>
+        <p class="text-muted text-lg max-w-xl mx-auto">Ready to start your next project? Reach out or fill the form below to book our studio.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+        <!-- Left: info -->
+        <div class="reveal-left">
+          <!-- Phone -->
+          <a href="tel:03113333287" class="flex items-center gap-4 text-white hover:text-accent transition-colors mb-8 group">
+            <div class="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center group-hover:bg-accent/20 transition-all">
+              <i class="fa-solid fa-phone-volume text-accent"></i>
+            </div>
+            <div>
+              <div class="text-xs text-muted uppercase tracking-wider mb-0.5">Call Us</div>
+              <div class="font-display font-800 text-2xl">0311-3333287</div>
+            </div>
+          </a>
+
+          <!-- WhatsApp -->
+          <a href="https://wa.me/923113333287" target="_blank" class="flex items-center gap-4 text-white hover:text-accent transition-colors mb-8 group">
+            <div class="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center group-hover:bg-accent/20 transition-all">
+              <i class="fa-brands fa-whatsapp text-accent text-lg"></i>
+            </div>
+            <div>
+              <div class="text-xs text-muted uppercase tracking-wider mb-0.5">WhatsApp</div>
+              <div class="font-display font-800 text-2xl">0311-3333287</div>
+            </div>
+          </a>
+
+          <!-- Social links -->
+          <div class="pt-6 border-t border-border">
+            <p class="text-muted text-xs uppercase tracking-widest font-bold mb-4">Follow Us</p>
+            <div class="flex gap-3 flex-wrap">
+              <a href="https://facebook.com/samnews.pk1" target="_blank" class="w-10 h-10 rounded-lg border border-border flex items-center justify-center text-muted hover:text-accent hover:border-accent transition-all text-sm"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="https://instagram.com/samtv.official" target="_blank" class="w-10 h-10 rounded-lg border border-border flex items-center justify-center text-muted hover:text-accent hover:border-accent transition-all text-sm"><i class="fa-brands fa-instagram"></i></a>
+              <a href="https://twitter.com/SharafatAliM00n" target="_blank" class="w-10 h-10 rounded-lg border border-border flex items-center justify-center text-muted hover:text-accent hover:border-accent transition-all text-sm"><i class="fa-brands fa-x-twitter"></i></a>
+              <a href="https://www.tiktok.com/@sharafatalimoon" target="_blank" class="w-10 h-10 rounded-lg border border-border flex items-center justify-center text-muted hover:text-accent hover:border-accent transition-all text-sm"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Contact form -->
+        <div class="service-card p-7 reveal-right">
+          <h3 class="font-display font-700 text-white text-lg mb-5">Send a Message</h3>
+          <form id="contact-form" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs text-muted uppercase tracking-wider block mb-1.5">Name</label>
+                <input type="text" id="f-name" class="form-input" placeholder="Your name" required />
+              </div>
+              <div>
+                <label class="text-xs text-muted uppercase tracking-wider block mb-1.5">Phone</label>
+                <input type="tel" id="f-phone" class="form-input" placeholder="03xx-xxxxxxx" />
+              </div>
+            </div>
+            <div>
+              <label class="text-xs text-muted uppercase tracking-wider block mb-1.5">Service Needed</label>
+              <select id="f-service" class="form-input">
+                <option value="" style="background:#16161a">Select a service...</option>
+                <option value="Video Editing" style="background:#16161a">Video Editing</option>
+                <option value="Podcast" style="background:#16161a">Podcast Recording</option>
+                <option value="Event Shooting" style="background:#16161a">Event Shooting</option>
+                <option value="Thumbnail Design" style="background:#16161a">Thumbnail Design</option>
+                <option value="Advertisement" style="background:#16161a">Advertisement / Posts</option>
+                <option value="Interview" style="background:#16161a">Interview Setup</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-muted uppercase tracking-wider block mb-1.5">Message</label>
+              <textarea id="f-message" class="form-input resize-none" rows="4" placeholder="Tell us about your project..."></textarea>
+            </div>
+            <button type="submit" class="btn-primary w-full py-3 rounded-xl text-sm flex items-center justify-center gap-2">
+              <i class="fa-solid fa-paper-plane text-xs"></i> Send Message
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      <!-- Copyright -->
+      <div class="text-center mt-16 pt-6 border-t border-border">
+        <p class="text-muted text-xs">© 2026 SAM Studios. All Rights Reserved. Crafted with ❤️ in Pakistan.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       AI CHATBOT (Gemini Powered)
+  ════════════════════════════════════════════ -->
+
+  <!-- Chatbot bubble -->
+  <div id="chatbot-bubble" onclick="toggleChat()" title="Chat with SAM AI">
+    <i class="fa-solid fa-robot text-black text-xl" id="chat-icon"></i>
+  </div>
+
+  <!-- Chatbot window -->
+  <div id="chatbot-window">
+    <div class="chat-header">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full bg-black/20 flex items-center justify-center">
+          <i class="fa-solid fa-robot text-black text-sm"></i>
+        </div>
+        <div>
+          <div class="font-display font-700 text-black text-sm">SAM AI Assistant</div>
+          <div class="text-black/60 text-[10px]">Powered by Gemini</div>
+        </div>
+      </div>
+      <button onclick="toggleChat()" class="text-black/60 hover:text-black transition-colors text-lg leading-none">✕</button>
+    </div>
+
+    <div id="chat-messages">
+      <div class="msg-bot">
+        👋 Assalam o Alaikum! Main SAM Studios ka AI assistant hun. <br/><br/>
+        Aap mujhse video editing, podcast, event shooting, ya koi bhi service ke baare mein pooch sakte hain. Main madad karne ke liye hamesha yahan hun! 🎬
+      </div>
+    </div>
+
+    <div class="chat-input-row">
+      <input type="text" id="chat-input" placeholder="Apna sawal likhein..." onkeydown="if(event.key==='Enter') sendMessage()" />
+      <button id="chat-send" onclick="sendMessage()">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       JAVASCRIPT
+  ════════════════════════════════════════════ -->
+  <script>
+
+
+    const STUDIO_CONTEXT = `You are SAM Studios AI assistant. SAM Studios is a premium digital media agency in Pakistan that offers:
+    - Video Editing (YouTube, reels, commercials)
+    - Podcast Recording (multi-cam professional setup)
+    - Event Shooting (cinema-grade equipment)
+    - Graphic Designing (thumbnails, ads, social media posts)
+    - Interview Setup (corporate, documentary)
+    Contact: 0311-3333287
+    Social: Facebook: samnews.pk1, Instagram: samtv.official, TikTok: @sharafatalimoon
+    Answer questions about services, pricing, and bookings. Be friendly, professional, and concise. Reply in the same language the user uses (Urdu or English).`;
+
+    // ── Ticker ──
+    const tickerItems = [
+      '🎬 Professional Video Editing', '🎙️ Podcast Studio Available', '📸 Event Shooting', 
+      '🎨 Thumbnail & Graphics Design', '🎤 Interview Setup', '📱 Social Media Content',
+      '✨ Cinema-Grade Equipment', '🏆 200+ Projects Completed', '📞 0311-3333287'
+    ];
+    const tickerInner = document.getElementById('ticker-inner');
+    const tickerHTML = tickerItems.map(t => `<span class="mx-10">${t}</span>`).join('');
+    tickerInner.innerHTML = tickerHTML + tickerHTML;
+
+    // ── Mobile menu ──
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon   = document.getElementById('menu-icon');
+    menuToggle.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      menuIcon.className = isOpen ? 'fa-solid fa-xmark text-lg' : 'fa-solid fa-bars-staggered';
+    });
+    document.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      menuIcon.className = 'fa-solid fa-bars-staggered';
+    }));
+
+    // ── Scroll progress bar ──
+    window.addEventListener('scroll', () => {
+      const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      document.getElementById('progress-bar').style.width = pct + '%';
+      // Nav scroll class
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // ── Scroll reveal ──
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), (parseFloat(e.target.style.transitionDelay) || 0) * 1000);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => revealObserver.observe(el));
+
+    // ── Counter animation ──
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target.querySelector('[data-target]');
+          if (!el || el.dataset.counted) return;
+          el.dataset.counted = true;
+          const target = parseInt(el.dataset.target);
+          let current = 0;
+          const step = Math.ceil(target / 60);
+          const timer = setInterval(() => {
+            current = Math.min(current + step, target);
+            el.textContent = current + '+';
+            if (current >= target) { el.textContent = target + '+'; clearInterval(timer); }
+          }, 25);
+        }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.reveal').forEach(el => { if(el.querySelector('[data-target]')) counterObserver.observe(el); });
+
+    // ── Toast ──
+    function showToast(msg, duration = 3000) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), duration);
+    }
+
+    // ── Contact form ──
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name    = document.getElementById('f-name').value.trim();
+      const phone   = document.getElementById('f-phone').value.trim();
+      const service = document.getElementById('f-service').value;
+      const message = document.getElementById('f-message').value.trim();
+      if (!name || !message) { showToast('⚠️ Please fill in name and message.'); return; }
+      // WhatsApp redirect
+      const text = `*New Booking Request*%0A%0A*Name:* ${encodeURIComponent(name)}%0A*Phone:* ${encodeURIComponent(phone)}%0A*Service:* ${encodeURIComponent(service)}%0A*Message:* ${encodeURIComponent(message)}`;
+      window.open(`https://wa.me/923113333287?text=${text}`, '_blank');
+      showToast('✅ Redirecting to WhatsApp...');
+      this.reset();
+    });
+
+    // ── Chatbot ──
+    let chatOpen = false;
+    function toggleChat() {
+      chatOpen = !chatOpen;
+      document.getElementById('chatbot-window').classList.toggle('open', chatOpen);
+      document.getElementById('chat-icon').className = chatOpen ? 'fa-solid fa-xmark text-black text-xl' : 'fa-solid fa-robot text-black text-xl';
+    }
+
+    function addMessage(text, sender) {
+      const msgs = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.className = sender === 'user' ? 'msg-user' : 'msg-bot';
+      div.innerHTML = text.replace(/\n/g, '<br/>');
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+      return div;
+    }
+
+    function showTyping() {
+      const msgs = document.getElementById('chat-messages');
+      const div = document.createElement('div');
+      div.className = 'msg-bot msg-typing';
+      div.id = 'typing-indicator';
+      div.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function removeTyping() {
+      const t = document.getElementById('typing-indicator');
+      if (t) t.remove();
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('chat-input');
+      const text  = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      addMessage(text, 'user');
+
+      showTyping();
+      try {
+        const res = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+        removeTyping();
+        const reply = data?.reply || 'Sorry, mujhe samajh nahi aaya. Please dobara poochein.';
+        addMessage(reply, 'bot');
+      } catch (err) {
+        removeTyping();
+        addMessage('❌ Connection error. Please check your internet.', 'bot');
+      }
+    }
+  </script>
+
+</body>
+</html>
